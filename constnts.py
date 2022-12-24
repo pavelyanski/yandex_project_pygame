@@ -36,13 +36,14 @@ ICON = "icon.jpg"
 SPIDER = "spider.png"
 GVEN = "gven.png"
 HEART = "hp.png"
+BLACK_SPIDER = "black_spider.png"
 BACKGROUND = "background.jpg"
 INSTRUCTION = "instruction.jpg"
 COMICS_FONT = "comicsansms"
 WIN_SCREEN = "win_screen.jpg"
 LOSE_SCREEN = "lose_screen.jpg"
 DIRECTORY = "data"
-RESULTS = "data/rezults.txt"
+RESULTS = "data/results.txt"
 BONUSES_TYPES = ("hp", "bomb", "speed", "gold_gven", "diamond_gven")
 INTRO_TEXT = ["Добро пожаловать в игру!", "Исправь ошибку Эндрю Гарфилда!", "СПАСИ Гвен!"]
 CAPTION = "Save Gven!"
@@ -50,7 +51,11 @@ LOSE_SOUND = pygame.mixer.Sound("data/lose_sound.ogg")
 MISS_SOUND = pygame.mixer.Sound("data/miss_sound.ogg")
 NEW_LEVEL_SOUND = pygame.mixer.Sound("data/new_level_sound.ogg")
 MINUS_HEART_SOUND = pygame.mixer.Sound("data/minus_heart.ogg")
+SPEED_SOUND = pygame.mixer.Sound("data/speed_sound.ogg")
+HEART_SOUND = pygame.mixer.Sound("data/heart_sound.ogg")
 MISS_SOUND.set_volume(1)
 LOSE_SOUND.set_volume(0.2)
 NEW_LEVEL_SOUND.set_volume(0.3)
-MINUS_HEART_SOUND.set_volume(0.1)
+MINUS_HEART_SOUND.set_volume(0.2)
+SPEED_SOUND.set_volume(1)
+HEART_SOUND.set_volume(1)

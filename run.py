@@ -137,7 +137,8 @@ def get_info(spider, screen):
     font = pygame.font.SysFont(COMICS_FONT, 20)
     new_text = f'Lvl {LEVEL}'
     new_text_coord = 10
-    string_rendered = font.render(new_text, True, BLACK)
+    color = BLACK if LEVEL <= 4 else RED
+    string_rendered = font.render(new_text, True, color)
     level_rect = string_rendered.get_rect()
     level_rect.top = new_text_coord
     level_rect.x = WIDTH - level_rect.width * 1.2
@@ -174,6 +175,7 @@ def run_game():
     BONUS_SPEED_Y = 6
     BONUS_PAUSE = 10000
     FALL_PAUSE = 3000
+    START_FON = False
     spLeft = spRight = False
     spider = Spider()
     run = True
@@ -212,6 +214,9 @@ def run_game():
             pygame.mixer.music.stop()
             win_screen(spider)
             run = False
+        if LEVEL >= 5 and not START_FON:
+            fon = pygame.transform.scale(load_image(ICON), (WIDTH, HEIGHT))
+            START_FON = True
         get_info(spider, screen)
         all_sprites.draw(screen)
         heart_group.draw(screen)
@@ -293,6 +298,7 @@ class Bonus(pygame.sprite.Sprite):
         self.rect.y += self.speed_y
         if pygame.sprite.collide_mask(self, spider):
             if self.value == BONUSES_TYPES[0]:
+                HEART_SOUND.play()
                 spider.add_live()
                 self.kill()
             elif self.value == BONUSES_TYPES[1]:
@@ -300,6 +306,7 @@ class Bonus(pygame.sprite.Sprite):
                 MINUS_HEART_SOUND.play(0)
                 self.kill()
             elif self.value == BONUSES_TYPES[2]:
+                SPEED_SOUND.play()
                 spider.speed += 1 if spider.speed <= 10 else 0
                 self.kill()
             elif self.value == BONUSES_TYPES[3]:
@@ -375,6 +382,8 @@ class Spider(pygame.sprite.Sprite):
                 FALL_PAUSE -= 80
             pygame.time.set_timer(FALL_TIME, FALL_PAUSE)
             BONUSES.append('bomb')
+            if self.points == 4000:
+                self.image = pygame.transform.scale(load_image(BLACK_SPIDER), (50, 60))
 
     def add_live(self):
         self.lives += 1
