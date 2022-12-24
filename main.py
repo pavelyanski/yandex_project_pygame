@@ -15,7 +15,7 @@ def start_screen():
     font = pygame.font.Font(None, 30)
     text_coord = 350
     for line in INTRO_TEXT:
-        string_rendered = font.render(line, 1, GOLD)
+        string_rendered = font.render(line, True, GOLD)
         intro_rect = string_rendered.get_rect()
         text_coord += 10
         intro_rect.top = text_coord
@@ -53,7 +53,7 @@ def lose_screen(spider):
     new_text = [f'Результат: {spider.points}', f"Рекорд: {get_result()}"]
     new_text_coord = 430
     for line in new_text:
-        string_rendered = font.render(line, 1, GOLD)
+        string_rendered = font.render(line, True, GOLD)
         points_rect = string_rendered.get_rect()
         points_rect.top = new_text_coord
         points_rect.x = WIDTH - 175
@@ -62,7 +62,7 @@ def lose_screen(spider):
     text = "Для продолжения нажмите пробел"
     font = pygame.font.SysFont(None, 25)
     text_coord = HEIGHT
-    string_rendered = font.render(text, 1, RED, BLACK)
+    string_rendered = font.render(text, True, RED, BLACK)
     text_rect = string_rendered.get_rect()
     text_rect.top = text_coord - text_rect.height
     text_rect.x = WIDTH // 2 - text_rect.width // 2
@@ -86,7 +86,7 @@ def win_screen(spider):
     new_text = [f'Результат: {spider.points}', f"Рекорд: {get_result()}"]
     new_text_coord = 430
     for line in new_text:
-        string_rendered = font.render(line, 1, GOLD, BLACK)
+        string_rendered = font.render(line, True, GOLD, BLACK)
         points_rect = string_rendered.get_rect()
         points_rect.top = new_text_coord
         points_rect.x = WIDTH - 175
@@ -95,7 +95,7 @@ def win_screen(spider):
     text = "Для продолжения нажмите пробел"
     font = pygame.font.SysFont(None, 25)
     text_coord = HEIGHT
-    string_rendered = font.render(text, 1, RED, BLACK)
+    string_rendered = font.render(text, True, RED, BLACK)
     text_rect = string_rendered.get_rect()
     text_rect.top = text_coord - text_rect.height
     text_rect.x = WIDTH // 2 - text_rect.width // 2
@@ -122,7 +122,7 @@ def get_info(spider, screen):
     text = f"Points: {spider.points}"
     font = pygame.font.SysFont(COMICS_FONT, 15)
     text_coord = 40
-    string_rendered = font.render(text, 1, BLUE)
+    string_rendered = font.render(text, True, BLUE)
     text_rect = string_rendered.get_rect()
     text_rect.top = text_coord
     text_rect.x = 15
@@ -130,7 +130,7 @@ def get_info(spider, screen):
     font = pygame.font.SysFont(COMICS_FONT, 20)
     new_text = f'Lvl {LEVEL}'
     new_text_coord = 10
-    string_rendered = font.render(new_text, 1, BLACK)
+    string_rendered = font.render(new_text, True, BLACK)
     level_rect = string_rendered.get_rect()
     level_rect.top = new_text_coord
     level_rect.x = WIDTH - level_rect.width * 1.2
@@ -305,7 +305,7 @@ class Level(pygame.sprite.Sprite):
         super().__init__(all_sprites)
         self.text = f"--level {LEVEL}--"
         font = pygame.font.SysFont(COMICS_FONT, 50)
-        self.image = font.render(self.text, 1, BLUE, RED)
+        self.image = font.render(self.text, True, BLUE, RED)
         self.rect = self.image.get_rect()
         self.rect.y -= self.rect.height
         self.rect.x = WIDTH // 2 - self.rect.width // 2
