@@ -2,6 +2,8 @@ import os
 import sys
 from random import randint as r, choice as ch
 
+import pygame
+
 from constnts import *
 
 pygame.init()
@@ -87,6 +89,7 @@ def lose_screen(spider):
 
 def win_screen(spider):
     write_result(spider)
+    WIN_SOUND.play()
     fon = pygame.transform.scale(load_image(WIN_SCREEN), (WIDTH, HEIGHT))
     screen.blit(fon, (0, 0))
     font = pygame.font.Font(None, 30)
@@ -165,7 +168,8 @@ def instruction_screen():
 
 
 def run_game():
-    global spLeft, spRight, all_sprites, GVENS_SPEED_Y, BONUS_SPEED_Y, BONUS_PAUSE, FALL_PAUSE, main_run, LEVEL
+    global spLeft, spRight, spUp, all_sprites, GVENS_SPEED_Y, BONUS_SPEED_Y
+    global BONUS_PAUSE, FALL_PAUSE, main_run, LEVEL, spDown
     pygame.mixer.music.load("data/soundtrack.mp3")
     pygame.mixer.music.set_volume(0.05)
     pygame.mixer.music.play(-1, 20)
@@ -195,11 +199,19 @@ def run_game():
                     spLeft = True
                 if event.key == pygame.K_RIGHT:
                     spRight = True
+                if event.key == pygame.K_UP:
+                    spUp = True
+                if event.key == pygame.K_DOWN:
+                    spDown = True
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT:
                     spLeft = False
                 if event.key == pygame.K_RIGHT:
                     spRight = False
+                if event.key == pygame.K_UP:
+                    spUp = False
+                if event.key == pygame.K_DOWN:
+                    spDown = False
             if event.type == FALL_TIME:
                 Gven(GVENS_SPEED_Y)
             if event.type == BONUS_TIME:
@@ -270,6 +282,7 @@ class Gven(pygame.sprite.Sprite):
             self.rect.x += r(-5, 5)
         self.rect.y += self.speed_y
         if pygame.sprite.collide_mask(self, spider):
+            SAVE_SOUND.play()
             self.kill()
             spider.win()
         if self.rect.y >= HEIGHT:
@@ -307,7 +320,8 @@ class Bonus(pygame.sprite.Sprite):
                 self.kill()
             elif self.value == BONUSES_TYPES[2]:
                 SPEED_SOUND.play()
-                spider.speed += 1 if spider.speed <= 10 else 0
+                spider.speed_x += 1 if spider.speed_x <= 10 else 0
+                spider.speed_y += 1
                 self.kill()
             elif self.value == BONUSES_TYPES[3]:
                 for _ in range(5):
@@ -350,21 +364,34 @@ class Spider(pygame.sprite.Sprite):
         self.h = self.rect.height
         self.rect.x = WIDTH // 2 - self.w
         self.rect.y = HEIGHT - self.h
-        self.speed = 5
+        self.speed_x = 5
+        self.speed_y = 3
         self.lives = 3
         self.points = 0
-        self.count = 0
-        self.best_count = 0
 
     def update(self, spider):
         if spLeft:
             self.image = pygame.transform.flip(self.image, True, False)
-            if self.rect.x - self.speed >= 0:
-                self.rect = self.rect.move(-self.speed, 0)
+            if self.rect.x - self.speed_x >= 0:
+                self.rect = self.rect.move(-self.speed_x, 0)
+            else:
+                self.rect.x = 0
         if spRight:
             self.image = pygame.transform.flip(self.image, True, False)
-            if self.rect.x + self.speed <= WIDTH - self.w:
-                self.rect = self.rect.move(self.speed, 0)
+            if self.rect.x + self.speed_x <= WIDTH - self.w:
+                self.rect = self.rect.move(self.speed_x, 0)
+            else:
+                self.rect.x = WIDTH - self.rect.width
+        if spUp:
+            self.rect = self.rect.move(0, -self.speed_y)
+        if spDown:
+            if self.rect.y + self.speed_y + self.rect.height <= HEIGHT:
+                self.rect = self.rect.move(0, self.speed_y)
+            else:
+                self.rect.y = HEIGHT - self.rect.height
+        if self.rect.y + self.rect.height < HEIGHT and not (self.rect.x + self.rect.width == WIDTH or \
+                                                            self.rect.x == 0):
+            self.rect = self.rect.move(0, self.speed_y)
 
     def lose(self):
         self.lives -= 1
@@ -391,11 +418,12 @@ class Spider(pygame.sprite.Sprite):
 
 img = load_image(ICON)
 pygame.display.set_icon(img)
-main_run = True
-while main_run:
-    start_screen()
-    if not GAME:
-        instruction_screen()
-    run_game()
+
+if __name__ == "__main__":
+    while main_run:
+        start_screen()
+        if not GAME:
+            instruction_screen()
+        run_game()
 
 pygame.quit()
