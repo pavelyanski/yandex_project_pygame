@@ -1,5 +1,7 @@
 import pygame
 
+pygame.mixer.pre_init(44100, -16, 1, 512)
+pygame.init()
 FPS = 60
 SIZE = WIDTH, HEIGHT = 500, 500
 BLACK = pygame.Color("black")
@@ -44,3 +46,11 @@ RESULTS = "data/rezults.txt"
 BONUSES_TYPES = ("hp", "bomb", "speed", "gold_gven", "diamond_gven")
 INTRO_TEXT = ["Добро пожаловать в игру!", "Исправь ошибку Эндрю Гарфилда!", "СПАСИ Гвен!"]
 CAPTION = "Save Gven!"
+LOSE_SOUND = pygame.mixer.Sound("data/lose_sound.ogg")
+MISS_SOUND = pygame.mixer.Sound("data/miss_sound.ogg")
+NEW_LEVEL_SOUND = pygame.mixer.Sound("data/new_level_sound.ogg")
+MINUS_HEART_SOUND = pygame.mixer.Sound("data/minus_heart.ogg")
+MISS_SOUND.set_volume(1)
+LOSE_SOUND.set_volume(0.2)
+NEW_LEVEL_SOUND.set_volume(0.3)
+MINUS_HEART_SOUND.set_volume(0.1)
