@@ -5,18 +5,16 @@ from constnts import *
 
 pygame.init()
 screen = pygame.display.set_mode(SIZE)
-pygame.display.set_caption("Save Gven!")
+pygame.display.set_caption(CAPTION)
 clock = pygame.time.Clock()
 
 
 def start_screen():
-    intro_text = ["Добро пожаловать в игру!", "Исправь ошибку Эндрю Гарфилда!", "СПАСИ Гвен!"]
-
     fon = pygame.transform.scale(load_image('start_screen.png'), (WIDTH, HEIGHT))
     screen.blit(fon, (0, 0))
     font = pygame.font.Font(None, 30)
     text_coord = 350
-    for line in intro_text:
+    for line in INTRO_TEXT:
         string_rendered = font.render(line, 1, GOLD)
         intro_rect = string_rendered.get_rect()
         text_coord += 10
@@ -36,23 +34,23 @@ def start_screen():
         clock.tick(FPS)
 
 
-def get_rezult():
-    with open("data/rezults.txt") as file:
-        max_rezult = max([int(x) for x in file])
-    return max_rezult
+def get_result():
+    with open(RESULTS) as file:
+        max_result = max([int(x) for x in file])
+    return max_result
 
 
-def write_rezult(spider):
-    with open("data/rezults.txt", "a", encoding="utf8") as file:
+def write_result(spider):
+    with open(RESULTS, "a", encoding="utf8") as file:
         file.write(str(spider.points) + "\n")
 
 
 def lose_screen(spider):
-    write_rezult(spider)
-    fon = pygame.transform.scale(load_image('lose_screen.jpg'), (WIDTH, HEIGHT))
+    write_result(spider)
+    fon = pygame.transform.scale(load_image(LOSE_SCREEN), (WIDTH, HEIGHT))
     screen.blit(fon, (0, 0))
     font = pygame.font.Font(None, 30)
-    new_text = [f'Результат: {spider.points}', f"Рекорд: {get_rezult()}"]
+    new_text = [f'Результат: {spider.points}', f"Рекорд: {get_result()}"]
     new_text_coord = 430
     for line in new_text:
         string_rendered = font.render(line, 1, GOLD)
@@ -81,11 +79,11 @@ def lose_screen(spider):
 
 
 def win_screen(spider):
-    write_rezult(spider)
-    fon = pygame.transform.scale(load_image('win_screen.jpg'), (WIDTH, HEIGHT))
+    write_result(spider)
+    fon = pygame.transform.scale(load_image(WIN_SCREEN), (WIDTH, HEIGHT))
     screen.blit(fon, (0, 0))
     font = pygame.font.Font(None, 30)
-    new_text = [f'Результат: {spider.points}', f"Рекорд: {get_rezult()}"]
+    new_text = [f'Результат: {spider.points}', f"Рекорд: {get_result()}"]
     new_text_coord = 430
     for line in new_text:
         string_rendered = font.render(line, 1, GOLD, BLACK)
@@ -122,14 +120,14 @@ def terminate():
 def get_info(spider, screen):
     global LEVEL, heart_group
     text = f"Points: {spider.points}"
-    font = pygame.font.SysFont('comicsansms', 15)
+    font = pygame.font.SysFont(COMICS_FONT, 15)
     text_coord = 40
     string_rendered = font.render(text, 1, BLUE)
     text_rect = string_rendered.get_rect()
     text_rect.top = text_coord
     text_rect.x = 15
     screen.blit(string_rendered, text_rect)
-    font = pygame.font.SysFont('comicsansms', 20)
+    font = pygame.font.SysFont(COMICS_FONT, 20)
     new_text = f'Lvl {LEVEL}'
     new_text_coord = 10
     string_rendered = font.render(new_text, 1, BLACK)
@@ -145,7 +143,7 @@ def get_info(spider, screen):
 def instruction_screen():
     global GAME
     GAME = True
-    fon = pygame.transform.scale(load_image('instruction.jpg'), (WIDTH, HEIGHT))
+    fon = pygame.transform.scale(load_image(INSTRUCTION), (WIDTH, HEIGHT))
     screen.blit(fon, (0, 0))
     while True:
         for event in pygame.event.get():
@@ -169,7 +167,7 @@ def run_game():
     spLeft = spRight = False
     spider = Spider()
     run = True
-    fon = pygame.transform.scale(load_image('background.jpg'), (WIDTH, HEIGHT))
+    fon = pygame.transform.scale(load_image(BACKGROUND), (WIDTH, HEIGHT))
     pygame.time.set_timer(FALL_TIME, FALL_PAUSE)
     pygame.time.set_timer(BONUS_TIME, BONUS_PAUSE)
     pygame.time.set_timer(SPECIAL_GVEN_TIME, SPECIAL_GVEN_PAUSE)
@@ -210,7 +208,7 @@ def run_game():
 
 
 def load_image(name, colorkey=None):
-    fullname = os.path.join('data', name)
+    fullname = os.path.join(DIRECTORY, name)
     if not os.path.isfile(fullname):
         print(f"Файл с изображением '{fullname}' не найден")
         sys.exit()
@@ -228,7 +226,7 @@ def load_image(name, colorkey=None):
 class Heart(pygame.sprite.Sprite):
     def __init__(self, coord):
         super().__init__(heart_group)
-        self.image = pygame.transform.scale(load_image('hp.png'), (70, 70))
+        self.image = pygame.transform.scale(load_image(HEART), (70, 70))
         self.rect = self.image.get_rect()
         self.rect.x = 0 + self.rect.width * coord * 0.5
         self.rect.y = -10
@@ -238,11 +236,11 @@ class Gven(pygame.sprite.Sprite):
     def __init__(self, speed_y):
         super().__init__(all_sprites, gven_group)
         self.frames = []
-        self.image = load_image('gven.png')
-        # self.cut_sheet(self.sheet, 5, 4)
+        self.image = load_image(GVEN)
         self.get_gvens()
         self.cur_frame = 0
-        self.image = pygame.transform.scale(self.frames[self.cur_frame], (160, 160))
+        self.size = SIZES[GVEN]
+        self.image = pygame.transform.scale(self.frames[self.cur_frame], self.size)
         self.rect = self.image.get_rect()
         self.rect.x = r(0, WIDTH - self.rect.width)
         self.rect.y = -self.rect.height
@@ -250,7 +248,7 @@ class Gven(pygame.sprite.Sprite):
 
     def update(self, spider):
         self.cur_frame = (self.cur_frame + 1) % len(self.frames)
-        self.image = pygame.transform.scale(self.frames[self.cur_frame], (160, 160))
+        self.image = pygame.transform.scale(self.frames[self.cur_frame], self.size)
         if LEVEL >= 5:
             self.rect.x += r(-5, 5)
         self.rect.y += self.speed_y
@@ -280,20 +278,20 @@ class Bonus(pygame.sprite.Sprite):
         self.rect.x += r(*DELTA_X[self.value])
         self.rect.y += self.speed_y
         if pygame.sprite.collide_mask(self, spider):
-            if self.value == 'hp':
+            if self.value == BONUSES_TYPES[0]:
                 spider.add_live()
                 self.kill()
-            elif self.value == 'bomb':
+            elif self.value == BONUSES_TYPES[1]:
                 spider.lose()
                 self.kill()
-            elif self.value == 'speed':
+            elif self.value == BONUSES_TYPES[2]:
                 spider.speed += 1 if spider.speed <= 10 else 0
                 self.kill()
-            elif self.value == 'gold_gven':
+            elif self.value == BONUSES_TYPES[3]:
                 for _ in range(5):
                     spider.win()
                 self.kill()
-            elif self.value == 'diamond_gven':
+            elif self.value == BONUSES_TYPES[4]:
                 for _ in range(10):
                     spider.win()
                 self.kill()
@@ -306,7 +304,7 @@ class Level(pygame.sprite.Sprite):
         global LEVEL, LEVELS_SPEED, screen, GOLD, BLACK, RED, BLUE
         super().__init__(all_sprites)
         self.text = f"--level {LEVEL}--"
-        font = pygame.font.SysFont('comicsansms', 50)
+        font = pygame.font.SysFont(COMICS_FONT, 50)
         self.image = font.render(self.text, 1, BLUE, RED)
         self.rect = self.image.get_rect()
         self.rect.y -= self.rect.height
@@ -324,7 +322,7 @@ class Level(pygame.sprite.Sprite):
 class Spider(pygame.sprite.Sprite):
     def __init__(self, ):
         super().__init__(all_sprites)
-        self.image = pygame.transform.scale(load_image('spider.png'), (50, 60))
+        self.image = pygame.transform.scale(load_image(SPIDER), (50, 60))
         self.rect = self.image.get_rect()
         self.w = self.rect.width
         self.h = self.rect.height
@@ -348,7 +346,7 @@ class Spider(pygame.sprite.Sprite):
         self.lives -= 1
 
     def win(self):
-        global GVENS_SPEED_Y, FALL_PAUSE, FALL_TIME, BONUS_SPEED_Y, LEVEL, WEBS_SPEED, BONUSES
+        global GVENS_SPEED_Y, FALL_PAUSE, FALL_TIME, BONUS_SPEED_Y, LEVEL
         self.points += 100
         if self.points >= 1000 and self.points % 1000 == 0:
             LEVEL += 1
@@ -364,7 +362,7 @@ class Spider(pygame.sprite.Sprite):
         self.lives += 1
 
 
-img = load_image("icon.jpg")
+img = load_image(ICON)
 pygame.display.set_icon(img)
 main_run = True
 while main_run:
