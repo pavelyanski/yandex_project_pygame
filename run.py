@@ -38,6 +38,32 @@ def start_screen():
         clock.tick(FPS)
 
 
+def pause_screen():
+    pygame.mixer.music.load(SOUNDTRACK)
+    pygame.mixer.music.play(-1, 3)
+    pygame.mixer.music.set_volume(0.3)
+    fon = pygame.transform.scale(load_image(PAUSE_SCREEN), (WIDTH, HEIGHT))
+    screen.blit(fon, (0, 0))
+    text = "Для продолжения нажмите P"
+    font = pygame.font.SysFont(None, 25)
+    text_coord = HEIGHT
+    string_rendered = font.render(text, True, RED, BLACK)
+    text_rect = string_rendered.get_rect()
+    text_rect.top = text_coord - text_rect.height
+    text_rect.x = WIDTH // 2 - text_rect.width // 2
+    screen.blit(string_rendered, text_rect)
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                terminate()
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_p:
+                pygame.mixer.music.stop()
+                return
+        pygame.display.flip()
+        clock.tick(FPS)
+
+
 def get_result():
     with open(RESULTS) as file:
         max_result = max([int(x) for x in file])
@@ -166,7 +192,7 @@ def instruction_screen():
 
 def run_game():
     global spLeft, spRight, spUp, all_sprites, GVENS_SPEED_Y, BONUS_SPEED_Y
-    global BONUS_PAUSE, FALL_PAUSE, main_run, LEVEL, spDown
+    global BONUS_PAUSE, FALL_PAUSE, main_run, LEVEL, spDown, PAUSE
     pygame.mixer.music.load(SOUNDTRACK)
     pygame.mixer.music.set_volume(0.05)
     pygame.mixer.music.play(-1, 20)
@@ -200,6 +226,8 @@ def run_game():
                     spUp = True
                 if event.key == pygame.K_DOWN:
                     spDown = True
+                if event.key == pygame.K_p:
+                    pause_screen()
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT:
                     spLeft = False

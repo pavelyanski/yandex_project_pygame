@@ -53,6 +53,7 @@ COMICS_FONT = "comicsansms"
 WIN_SCREEN = "win_screen.jpg"
 START_SCREEN = "start_screen.png"
 LOSE_SCREEN = "lose_screen.jpg"
+PAUSE_SCREEN = "pause_screen.jpg"
 DIRECTORY = "data"
 RESULTS = "data/results.txt"
 BONUSES_TYPES = ("hp", "bomb", "speed", "gold_gven", "diamond_gven")
