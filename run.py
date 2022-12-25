@@ -1,9 +1,6 @@
 import os
 import sys
 from random import randint as r, choice as ch
-
-import pygame
-
 from constnts import *
 
 pygame.init()
@@ -13,10 +10,10 @@ clock = pygame.time.Clock()
 
 
 def start_screen():
-    pygame.mixer.music.load("data/soundtrack.mp3")
+    pygame.mixer.music.load(SOUNDTRACK)
     pygame.mixer.music.play(-1, 3)
     pygame.mixer.music.set_volume(0.3)
-    fon = pygame.transform.scale(load_image('start_screen.png'), (WIDTH, HEIGHT))
+    fon = pygame.transform.scale(load_image(START_SCREEN), (WIDTH, HEIGHT))
     screen.blit(fon, (0, 0))
     font = pygame.font.Font(None, 30)
     text_coord = 350
@@ -170,7 +167,7 @@ def instruction_screen():
 def run_game():
     global spLeft, spRight, spUp, all_sprites, GVENS_SPEED_Y, BONUS_SPEED_Y
     global BONUS_PAUSE, FALL_PAUSE, main_run, LEVEL, spDown
-    pygame.mixer.music.load("data/soundtrack.mp3")
+    pygame.mixer.music.load(SOUNDTRACK)
     pygame.mixer.music.set_volume(0.05)
     pygame.mixer.music.play(-1, 20)
     all_sprites = pygame.sprite.Group()
@@ -218,6 +215,11 @@ def run_game():
                 Bonus(BONUS_SPEED_Y, ch(BONUSES))
             if event.type == SPECIAL_GVEN_TIME:
                 Bonus(SPECIAL_GVENS_SPEED_Y, ch(SPECIAL_GVENS))
+        if spider.rect.y <= -1300:
+            spider.points = 10000
+            pygame.mixer.music.stop()
+            win_screen(spider)
+            run = False
         if spider.lives <= 0:
             pygame.mixer.music.stop()
             lose_screen(spider)
@@ -234,6 +236,11 @@ def run_game():
         heart_group.draw(screen)
         all_sprites.update(spider)
         pygame.display.flip()
+
+
+def create_particles(position, image, first_size=(30, 30), sizes=(20, 25)):
+    for _ in range(PARTICLE_COUNT):
+        Particle(position, ch(NUMBERS), ch(NUMBERS), image, first_size, sizes)
 
 
 def load_image(name, colorkey=None):
@@ -312,22 +319,27 @@ class Bonus(pygame.sprite.Sprite):
         if pygame.sprite.collide_mask(self, spider):
             if self.value == BONUSES_TYPES[0]:
                 HEART_SOUND.play()
+                create_particles((self.rect.x, self.rect.y), HEART)
                 spider.add_live()
                 self.kill()
             elif self.value == BONUSES_TYPES[1]:
                 spider.lose()
+                create_particles((self.rect.x, self.rect.y), BOMB)
                 MINUS_HEART_SOUND.play(0)
                 self.kill()
             elif self.value == BONUSES_TYPES[2]:
                 SPEED_SOUND.play()
+                create_particles((self.rect.x, self.rect.y), SPEED, *PARTICLE_SIZES[SPEED])
                 spider.speed_x += 1 if spider.speed_x <= 10 else 0
                 spider.speed_y += 1
                 self.kill()
             elif self.value == BONUSES_TYPES[3]:
+                create_particles((self.rect.x, self.rect.y), GOLD_COIN, *PARTICLE_SIZES[GOLD_COIN])
                 for _ in range(5):
                     spider.win()
                 self.kill()
             elif self.value == BONUSES_TYPES[4]:
+                create_particles((self.rect.x, self.rect.y), DIAMOND, *PARTICLE_SIZES[DIAMOND])
                 for _ in range(10):
                     spider.win()
                 self.kill()
@@ -414,6 +426,26 @@ class Spider(pygame.sprite.Sprite):
 
     def add_live(self):
         self.lives += 1
+
+
+class Particle(pygame.sprite.Sprite):
+    def __init__(self, pos, dx, dy, image, first_size, sizes):
+        self.fire = [pygame.transform.scale(load_image(image), first_size)]
+        for scale in sizes:
+            self.fire.append(pygame.transform.scale(self.fire[0], (scale, scale)))
+        super().__init__(all_sprites)
+        self.image = ch(self.fire)
+        self.rect = self.image.get_rect()
+        self.velocity = [dx, dy]
+        self.rect.x, self.rect.y = pos
+        self.gravity = GRAVITY
+
+    def update(self, spider):
+        self.velocity[1] += self.gravity
+        self.rect.x += self.velocity[0]
+        self.rect.y += self.velocity[1]
+        if not self.rect.colliderect(SCREEN_RECT):
+            self.kill()
 
 
 img = load_image(ICON)
