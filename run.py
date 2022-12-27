@@ -1,15 +1,19 @@
-import os
-import sys
-from random import randint as r, choice as ch
-from constnts import *
+from random import randint, choice
+from auxiliary_functions import *
 
-pygame.init()
-screen = pygame.display.set_mode(SIZE)
-pygame.display.set_caption(CAPTION)
-clock = pygame.time.Clock()
+
+def initialization():
+    global clock, screen
+    pygame.init()
+    screen = pygame.display.set_mode(SIZE)
+    pygame.display.set_caption(CAPTION)
+    img = load_image(ICON)
+    pygame.display.set_icon(img)
+    clock = pygame.time.Clock()
 
 
 def start_screen():
+    global clock
     pygame.mixer.music.load(SOUNDTRACK)
     pygame.mixer.music.play(-1, 3)
     pygame.mixer.music.set_volume(0.3)
@@ -62,17 +66,6 @@ def pause_screen():
                 return
         pygame.display.flip()
         clock.tick(FPS)
-
-
-def get_result():
-    with open(RESULTS) as file:
-        max_result = max([int(x) for x in file])
-    return max_result
-
-
-def write_result(spider):
-    with open(RESULTS, "a", encoding="utf8") as file:
-        file.write(str(spider.points) + "\n")
 
 
 def lose_screen(spider):
@@ -145,13 +138,8 @@ def win_screen(spider):
         clock.tick(FPS)
 
 
-def terminate():
-    pygame.quit()
-    sys.exit()
-
-
 def get_info(spider, screen):
-    global LEVEL, heart_group
+    global level, heart_group
     text = f"Points: {spider.points}"
     font = pygame.font.SysFont(COMICS_FONT, 15)
     text_coord = 40
@@ -161,9 +149,9 @@ def get_info(spider, screen):
     text_rect.x = 15
     screen.blit(string_rendered, text_rect)
     font = pygame.font.SysFont(COMICS_FONT, 20)
-    new_text = f'Lvl {LEVEL}'
+    new_text = f'Lvl {level}'
     new_text_coord = 10
-    color = BLACK if LEVEL <= 4 else RED
+    color = BLACK if level <= 4 else RED
     string_rendered = font.render(new_text, True, color)
     level_rect = string_rendered.get_rect()
     level_rect.top = new_text_coord
@@ -191,24 +179,24 @@ def instruction_screen():
 
 
 def run_game():
-    global spLeft, spRight, spUp, all_sprites, GVENS_SPEED_Y, BONUS_SPEED_Y
-    global BONUS_PAUSE, FALL_PAUSE, main_run, LEVEL, spDown, PAUSE
+    global spLeft, spRight, spUp, all_sprites, gvens_speed_y, bonus_speed_y
+    global main_run, spDown, level, bonuse_pause, fall_pause
     pygame.mixer.music.load(SOUNDTRACK)
     pygame.mixer.music.set_volume(0.05)
     pygame.mixer.music.play(-1, 20)
     all_sprites = pygame.sprite.Group()
-    LEVEL = 1
-    GVENS_SPEED_Y = 5
-    BONUS_SPEED_Y = 6
-    BONUS_PAUSE = 10000
-    FALL_PAUSE = 3000
-    START_FON = False
+    level = 1
+    gvens_speed_y = 5
+    bonus_speed_y = 6
+    bonus_pause = 10000
+    fall_pause = 3000
+    start_fon = False
     spLeft = spRight = False
     spider = Spider()
     run = True
     fon = pygame.transform.scale(load_image(BACKGROUND), (WIDTH, HEIGHT))
-    pygame.time.set_timer(FALL_TIME, FALL_PAUSE)
-    pygame.time.set_timer(BONUS_TIME, BONUS_PAUSE)
+    pygame.time.set_timer(FALL_TIME, fall_pause)
+    pygame.time.set_timer(BONUS_TIME, bonus_pause)
     pygame.time.set_timer(SPECIAL_GVEN_TIME, SPECIAL_GVEN_PAUSE)
     while run:
         screen.blit(fon, (0, 0))
@@ -238,11 +226,11 @@ def run_game():
                 if event.key == pygame.K_DOWN:
                     spDown = False
             if event.type == FALL_TIME:
-                Gven(GVENS_SPEED_Y)
+                Gven(gvens_speed_y)
             if event.type == BONUS_TIME:
-                Bonus(BONUS_SPEED_Y, ch(BONUSES))
+                Bonus(bonus_speed_y, choice(BONUSES))
             if event.type == SPECIAL_GVEN_TIME:
-                Bonus(SPECIAL_GVENS_SPEED_Y, ch(SPECIAL_GVENS))
+                Bonus(SPECIAL_GVENS_SPEED_Y, choice(SPECIAL_GVENS))
         if spider.rect.y <= -1300:
             spider.points = 10000
             pygame.mixer.music.stop()
@@ -256,9 +244,9 @@ def run_game():
             pygame.mixer.music.stop()
             win_screen(spider)
             run = False
-        if LEVEL >= 5 and not START_FON:
+        if level >= 5 and not start_fon:
             fon = pygame.transform.scale(load_image(ICON), (WIDTH, HEIGHT))
-            START_FON = True
+            start_fon = True
         get_info(spider, screen)
         all_sprites.draw(screen)
         heart_group.draw(screen)
@@ -268,23 +256,7 @@ def run_game():
 
 def create_particles(position, image, first_size=(30, 30), sizes=(20, 25)):
     for _ in range(PARTICLE_COUNT):
-        Particle(position, ch(NUMBERS), ch(NUMBERS), image, first_size, sizes)
-
-
-def load_image(name, colorkey=None):
-    fullname = os.path.join(DIRECTORY, name)
-    if not os.path.isfile(fullname):
-        print(f"Файл с изображением '{fullname}' не найден")
-        sys.exit()
-    image = pygame.image.load(fullname)
-    if colorkey is not None:
-        image = image.convert()
-        if colorkey == -1:
-            colorkey = image.get_at((0, 0))
-        image.set_colorkey(colorkey)
-    else:
-        image = image.convert_alpha()
-    return image
+        Particle(position, choice(NUMBERS), choice(NUMBERS), image, first_size, sizes)
 
 
 class Heart(pygame.sprite.Sprite):
@@ -306,15 +278,15 @@ class Gven(pygame.sprite.Sprite):
         self.size = SIZES[GVEN]
         self.image = pygame.transform.scale(self.frames[self.cur_frame], self.size)
         self.rect = self.image.get_rect()
-        self.rect.x = r(0, WIDTH - self.rect.width)
+        self.rect.x = randint(0, WIDTH - self.rect.width)
         self.rect.y = -self.rect.height
         self.speed_y = speed_y
 
     def update(self, spider):
         self.cur_frame = (self.cur_frame + 1) % len(self.frames)
         self.image = pygame.transform.scale(self.frames[self.cur_frame], self.size)
-        if LEVEL >= 5:
-            self.rect.x += r(-5, 5)
+        if level >= 5:
+            self.rect.x += randint(-5, 5)
         self.rect.y += self.speed_y
         if pygame.sprite.collide_mask(self, spider):
             SAVE_SOUND.play()
@@ -337,12 +309,12 @@ class Bonus(pygame.sprite.Sprite):
         self.value = value
         self.image = pygame.transform.scale(load_image(f'{value}.png'), SIZES[self.value])
         self.rect = self.image.get_rect()
-        self.rect.x = r(0, WIDTH - self.rect.width)
+        self.rect.x = randint(0, WIDTH - self.rect.width)
         self.rect.y = -self.rect.height
         self.speed_y = speed_y
 
     def update(self, spider):
-        self.rect.x += r(*DELTA_X[self.value])
+        self.rect.x += randint(*DELTA_X[self.value])
         self.rect.y += self.speed_y
         if pygame.sprite.collide_mask(self, spider):
             if self.value == BONUSES_TYPES[0]:
@@ -377,9 +349,9 @@ class Bonus(pygame.sprite.Sprite):
 
 class Level(pygame.sprite.Sprite):
     def __init__(self):
-        global LEVEL, LEVELS_SPEED, screen, GOLD, BLACK, RED, BLUE
+        global level, LEVELS_SPEED, screen, GOLD, BLACK, RED, BLUE
         super().__init__(all_sprites)
-        self.text = f"--level {LEVEL}--"
+        self.text = f"--level {level}--"
         font = pygame.font.SysFont(COMICS_FONT, 50)
         self.image = font.render(self.text, True, BLUE, RED)
         self.rect = self.image.get_rect()
@@ -396,7 +368,7 @@ class Level(pygame.sprite.Sprite):
 
 
 class Spider(pygame.sprite.Sprite):
-    def __init__(self, ):
+    def __init__(self):
         super().__init__(all_sprites)
         self.image = pygame.transform.scale(load_image(SPIDER), (50, 60))
         self.rect = self.image.get_rect()
@@ -437,17 +409,17 @@ class Spider(pygame.sprite.Sprite):
         self.lives -= 1
 
     def win(self):
-        global GVENS_SPEED_Y, FALL_PAUSE, FALL_TIME, BONUS_SPEED_Y, LEVEL
+        global gvens_speed_y, fall_pause, FALL_TIME, bonus_speed_y, level
         self.points += 100
         if self.points >= 1000 and self.points % 1000 == 0:
-            LEVEL += 1
+            level += 1
             NEW_LEVEL_SOUND.play(0)
             Level()
-            GVENS_SPEED_Y += 1
-            BONUS_SPEED_Y += 1
-            if FALL_PAUSE >= 2000:
-                FALL_PAUSE -= 80
-            pygame.time.set_timer(FALL_TIME, FALL_PAUSE)
+            gvens_speed_y += 1
+            bonus_speed_y += 1
+            if fall_pause >= 2000:
+                fall_pause -= 80
+            pygame.time.set_timer(FALL_TIME, fall_pause)
             BONUSES.append('bomb')
             if self.points == 4000:
                 self.image = pygame.transform.scale(load_image(BLACK_SPIDER), (50, 60))
@@ -462,7 +434,7 @@ class Particle(pygame.sprite.Sprite):
         for scale in sizes:
             self.fire.append(pygame.transform.scale(self.fire[0], (scale, scale)))
         super().__init__(all_sprites)
-        self.image = ch(self.fire)
+        self.image = choice(self.fire)
         self.rect = self.image.get_rect()
         self.velocity = [dx, dy]
         self.rect.x, self.rect.y = pos
@@ -476,10 +448,8 @@ class Particle(pygame.sprite.Sprite):
             self.kill()
 
 
-img = load_image(ICON)
-pygame.display.set_icon(img)
-
 if __name__ == "__main__":
+    initialization()
     while main_run:
         start_screen()
         if not GAME:
