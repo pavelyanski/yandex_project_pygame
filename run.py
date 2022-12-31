@@ -1,4 +1,5 @@
 from random import randint, choice
+
 from auxiliary_functions import *
 
 
@@ -109,6 +110,7 @@ def win_screen(spider):
     fon = pygame.transform.scale(load_image(WIN_SCREEN), (WIDTH, HEIGHT))
     screen.blit(fon, (0, 0))
     font = pygame.font.Font(None, 30)
+    spider.points = 10000 if spider.points < 10000 else spider.points
     new_text = [f'Результат: {spider.points}', f"Рекорд: {get_result()}"]
     new_text_coord = 430
     for line in new_text:
@@ -133,6 +135,7 @@ def win_screen(spider):
                 terminate()
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
+                    WIN_SOUND.stop()
                     return
         pygame.display.flip()
         clock.tick(FPS)
@@ -215,7 +218,9 @@ def run_game():
                 if event.key == pygame.K_DOWN:
                     spDown = True
                 if event.key == pygame.K_p:
+                    pygame.mixer.music.pause()
                     pause_screen()
+                    pygame.mixer.music.play()
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT:
                     spLeft = False
@@ -233,17 +238,14 @@ def run_game():
                 Bonus(SPECIAL_GVENS_SPEED_Y, choice(SPECIAL_GVENS))
         if spider.rect.y <= -1300:
             spider.points = 10000
-            pygame.mixer.music.stop()
-            win_screen(spider)
-            run = False
         if spider.lives <= 0:
             pygame.mixer.music.stop()
-            lose_screen(spider)
             run = False
+            lose_screen(spider)
         if spider.points >= 10000:
             pygame.mixer.music.stop()
-            win_screen(spider)
             run = False
+            win_screen(spider)
         if level >= 5 and not start_fon:
             fon = pygame.transform.scale(load_image(ICON), (WIDTH, HEIGHT))
             start_fon = True
