@@ -45,17 +45,18 @@ SPEED = "speed.png"
 GOLD_COIN = "gold_coin.png"
 DIAMOND = "diamond.png"
 PARTICLE_SIZES = {"speed.png": ((60, 60), (50, 55)), "gold_coin.png": ((40, 40), (30, 35)),
-                  "diamond.png": ((80, 80), (70, 75))}
+                  "diamond.png": ((80, 80), (70, 75)), "gven.png": ((60, 60), (50, 55))}
 BLACK_SPIDER = "black_spider.png"
 BACKGROUND = "background.jpg"
-INSTRUCTION = "instruction.jpg"
+INSTRUCTION = "instruction_screen.jpg"
 COMICS_FONT = "comicsansms"
 WIN_SCREEN = "win_screen.jpg"
 START_SCREEN = "start_screen.png"
 LOSE_SCREEN = "lose_screen.jpg"
 PAUSE_SCREEN = "pause_screen.jpg"
 DIRECTORY = "data/pictures"
-RESULTS = "data/results.txt"
+RESULTS = "data/files/results.txt"
+HINTS = "data/files/hints.txt"
 BONUSES_TYPES = ("hp", "bomb", "speed", "gold_gven", "diamond_gven")
 INTRO_TEXT = ["Добро пожаловать в игру!", "Исправь ошибку Эндрю Гарфилда!", "СПАСИ Гвен!"]
 CAPTION = "Save Gven!"

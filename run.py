@@ -1,5 +1,3 @@
-from random import randint, choice
-
 from auxiliary_functions import *
 
 
@@ -30,6 +28,14 @@ def start_screen():
         intro_rect.x = 10
         text_coord += intro_rect.height
         screen.blit(string_rendered, intro_rect)
+    text = choose_hint()
+    font = pygame.font.SysFont(None, 24)
+    text_coord = HEIGHT
+    string_rendered = font.render(text, True, RED)
+    text_rect = string_rendered.get_rect()
+    text_rect.top = text_coord - text_rect.height
+    text_rect.x = WIDTH // 2 - text_rect.width // 2
+    screen.blit(string_rendered, text_rect)
 
     while True:
         for event in pygame.event.get():
@@ -292,6 +298,7 @@ class Gven(pygame.sprite.Sprite):
         self.rect.y += self.speed_y
         if pygame.sprite.collide_mask(self, spider):
             SAVE_SOUND.play()
+            create_particles((spider.rect.x, self.rect.y), GVEN, *PARTICLE_SIZES[GVEN])
             self.kill()
             spider.win()
         if self.rect.y >= HEIGHT:

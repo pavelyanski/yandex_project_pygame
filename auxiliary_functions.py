@@ -1,6 +1,7 @@
 import sys
 import os
 from constnts import *
+from random import randint, choice
 
 
 def get_result():
@@ -33,3 +34,9 @@ def load_image(name, colorkey=None):
     else:
         image = image.convert_alpha()
     return image
+
+
+def choose_hint():
+    with open(HINTS, "r", encoding="utf8") as file:
+        hints = [s[:-1] for s in file]
+    return choice(hints)
