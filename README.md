@@ -1,4 +1,4 @@
-![гифка с пауком](data/spider_gif.gif)
+![гифка с пауком](data/pictures/spider_gif.gif)
 # SAVE GVEN!
 Save Gven - игра для истинных фанатов человека-паука! Помоги Эндрю Гарфилду исправить его ошибку и поймай Гвен Стейси, но будь осторожен - Зелёный Гоблин тоже не дремлет и сбрасывает свои бомбы, чтобы лишить тебя жизни!
 ##### И помни:
@@ -18,7 +18,7 @@ ___
 ___
 ### Пояснительная записка
 #### Название проекта
-* __Save Gven__
+* [Save Gven](https://docs.google.com/presentation/d/1Ok7_RgXz7E8WmAbKW1MqjsUXAseC8a-HoJasEFAeTIc/edit?usp=sharing)
 #### Авторы проекта
 * [Янский Павел](https://vk.com/pavelyanski)
 

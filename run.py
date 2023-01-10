@@ -403,7 +403,7 @@ class Spider(pygame.sprite.Sprite):
                 self.rect = self.rect.move(self.speed_x, 0)
             else:
                 self.rect.x = WIDTH - self.rect.width
-        if spUp:
+        if spUp and (self.rect.x + self.rect.width == WIDTH or self.rect.x == 0):
             self.rect = self.rect.move(0, -self.speed_y)
         if spDown:
             if self.rect.y + self.speed_y + self.rect.height <= HEIGHT:
