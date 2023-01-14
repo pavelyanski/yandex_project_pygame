@@ -3,6 +3,7 @@ from auxiliary_functions import *
 
 def initialization():
     global clock, screen
+    pygame.mixer.pre_init(44100, -16, 1, 512)
     pygame.init()
     screen = pygame.display.set_mode(SIZE)
     pygame.display.set_caption(CAPTION)
@@ -459,6 +460,22 @@ class Particle(pygame.sprite.Sprite):
 
 if __name__ == "__main__":
     initialization()
+    LOSE_SOUND = pygame.mixer.Sound("data/sounds/lose_sound.ogg")
+    MISS_SOUND = pygame.mixer.Sound("data/sounds/miss_sound.ogg")
+    NEW_LEVEL_SOUND = pygame.mixer.Sound("data/sounds/new_level_sound.ogg")
+    MINUS_HEART_SOUND = pygame.mixer.Sound("data/sounds/minus_heart.ogg")
+    SPEED_SOUND = pygame.mixer.Sound("data/sounds/speed_sound.ogg")
+    HEART_SOUND = pygame.mixer.Sound("data/sounds/heart_sound.ogg")
+    WIN_SOUND = pygame.mixer.Sound("data/sounds/win_sound.ogg")
+    SAVE_SOUND = pygame.mixer.Sound("data/sounds/save_sound.ogg")
+    MISS_SOUND.set_volume(1)
+    LOSE_SOUND.set_volume(0.2)
+    NEW_LEVEL_SOUND.set_volume(0.3)
+    MINUS_HEART_SOUND.set_volume(0.2)
+    SPEED_SOUND.set_volume(1)
+    HEART_SOUND.set_volume(1)
+    WIN_SOUND.set_volume(0.2)
+    SAVE_SOUND.set_volume(0.4)
     while main_run:
         start_screen()
         if not GAME:

@@ -1,7 +1,5 @@
 import pygame
 
-pygame.mixer.pre_init(44100, -16, 1, 512)
-pygame.init()
 main_run = True
 FPS = 60
 SIZE = WIDTH, HEIGHT = 500, 500
@@ -57,24 +55,9 @@ PAUSE_SCREEN = "pause_screen.jpg"
 DIRECTORY = "data/pictures"
 RESULTS = "data/files/results.txt"
 HINTS = "data/files/hints.txt"
+SOUNDTRACK = "data/sounds/soundtrack.mp3"
 BONUSES_TYPES = ("hp", "bomb", "speed", "gold_gven", "diamond_gven")
 INTRO_TEXT = ["Добро пожаловать в игру!", "Исправь ошибку Эндрю Гарфилда!", "СПАСИ Гвен!"]
 CAPTION = "Save Gven!"
-LOSE_SOUND = pygame.mixer.Sound("data/sounds/lose_sound.ogg")
-MISS_SOUND = pygame.mixer.Sound("data/sounds/miss_sound.ogg")
-NEW_LEVEL_SOUND = pygame.mixer.Sound("data/sounds/new_level_sound.ogg")
-MINUS_HEART_SOUND = pygame.mixer.Sound("data/sounds/minus_heart.ogg")
-SPEED_SOUND = pygame.mixer.Sound("data/sounds/speed_sound.ogg")
-HEART_SOUND = pygame.mixer.Sound("data/sounds/heart_sound.ogg")
-WIN_SOUND = pygame.mixer.Sound("data/sounds/win_sound.ogg")
-SAVE_SOUND = pygame.mixer.Sound("data/sounds/save_sound.ogg")
 SOUNDTRACK = "data/sounds/soundtrack.mp3"
-MISS_SOUND.set_volume(1)
-LOSE_SOUND.set_volume(0.2)
-NEW_LEVEL_SOUND.set_volume(0.3)
-MINUS_HEART_SOUND.set_volume(0.2)
-SPEED_SOUND.set_volume(1)
-HEART_SOUND.set_volume(1)
-WIN_SOUND.set_volume(0.2)
-SAVE_SOUND.set_volume(0.4)
 GRAVITY = 0.5
